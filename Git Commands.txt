@@ -1,0 +1,83 @@
+1. 添加文件和提交文件：
+
+git add filename
+git commit -m "说明" 
+
+Please tell me who you are？
+git config --global user.email "wangbaokunvv@163.com"
+git config --global user.name "EricBK"
+
+
+2. 版本库的当前状态：
+
+git status
+git diff filename  		# 文件哪个地方发生了修改
+
+3. 版本回退
+
+git log 			# 查看每次修改和提交了什么内容
+git log --pretty=oneline 	# 以精简的方式查看提交的内容
+
+git reset --hard HEAD^ 		# 向上回退一个版本
+git reset --hard HEAD^^ 	# 向上回退两个版本
+git reset --hard HEAD~10	# 向上回退10个版本
+git reset --hard 版本号		# 回退到指定版本号的版本
+
+git reflog			# 记录自己的每一条命令
+
+4. 工作区和暂存区
+
+.git 				# 是版本库文件夹
+
+5. 撤销修改
+
+1) git checkout -- filename 	# 把文件在工作去的修改全部撤销，包括两种情况
+				（1）文件修改后还没有放到暂存区，撤销修改后就回到和版本库一模一样的状态；
+				（2）file已经添加到暂存区，又做了修改，撤销修改后就回到添加到暂存区后的状态；
+2）git reset HEAD filename	# 把暂存区的修改撤销掉（unstage）,撤销掉经过add但是还没有commit的内容；
+
+6. 删除文件
+
+git rm filename			# 将filename删除之后，使用该命令将版本库中的内容删除
+git commit -m "remove that file"
+
+7. 远程仓库
+
+1）ssh-keygen -t rsa -C "wangbaokunvv@163.com"	# 生成的pub key在用户主目录下，然后将其复制到github里面
+
+2）git remote add origin git@github.com:EricBK/gitname.git	# 添加远程库
+
+3）git push -u origin master	# 把当前分支master 推送到远程（之后提交的时候可以去掉-u参数）
+
+4）git clone git@github.com:EricBK/gitname.git
+
+8. 分支管理
+
+1）git checkout -b dev		# 创建dev分支，然后切换到dev分支，相当于
+	git branch dev
+	git checkout dev
+
+2）	git branch			# 查看当前分支
+	git checkout master		# 切换回master分支
+	git merge dev			# 合并指定分支到当前分支
+	git branch -d dev		# 删除指定分支
+3）合并分支的时候，通常 git会使用 Fast forward 模式，但这种模式下，删除分支后，会丢掉分支信息。
+如果要禁用fast forward ，需要使用下面的方法：
+	git merge --no-ff -m "merge with no-ff" dev
+   合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做出过合并，而fast forward 合并就看不出来曾经做过合并。
+
+9. 多人协作
+
+1）git remote -v		# 显示fetch和push的详细信息；
+
+2）git push origin master/dev	# 推送本地提交到远程库 master 或者 dev
+
+3）git clone git@github.com:EricBK/gitname.git
+				# 默认情况下只能看到本地的master分支
+4）如果要在dev分支上开发，就必须创建远程origin的dev分支到本地，需要用以下命令：
+   git checkout -b dev origin/dev
+   可以在dev上继续修改，然后时不时的把dev分支push 到远程：
+   git commit -m "add /usr/bin/env"
+   git push origin dev
+   如何push冲突的时候，先用git pull把最新的提交从origin/dev抓下来，然后在本地合并，解决冲突，再推送
+   如果 git pull 也失败了，原因是没有指定本地dev分支与远程 origin/dev 分支的链接。
